@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 5px;
+            width: 450px;
+            margin: 0px auto;
+            text-align: center;
+            font-size: 25px; color: #fff;
+        }
+
+        .cell {
+            background-color: #000;
+            border: 75px solid #000;
+            cursor: pointer;
+        }
+
+        .score {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+            font-size: 24px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="board">
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+    </div>
+
+    <div class="score">
+        <p>Player 1 (x): <span id="x-score">0</span></p>
+        <p>Player 2 (o): <span id="o-score">0</span></p>
+    </div>
+   
+    <script>
+        const cells = document.querySelectorAll(".cell");
+        const xScore = document.querySelector("#x-score");
+        const oScore = document.querySelector("#o-score");
+        let xIsNext = true;
+        let xWins = 0;
+        let oWins = 0;
+
+        for (let i = 0; i <= cells.length; i++) {
+            cells[i].addEventListener("click", function (e) {
+                if (e.target.textContent === "") {
+                    e.target.textContent = xIsNext ? "X" : "O";
+                    xIsNext = !xIsNext;
+
+                    // Check if someone has won the game
+                    if (checkWin(e.target.textContent)) {
+                        announceWinner();
+                        if (e.target.textContent === "X") {
+                            xWins++;
+                            xScore.textContent = xWins;
+                        } else {
+                            oWins++;
+                            oScore.textContent = oWins;
+                        }
+                        resetGame();
+                    }
+                }
+            });
+        }
+        
+        function announceWinner(player) {
+            gameOver = true;
+            let message = `Player ${player} wins!`;
+            alert(message);
+        }
+
+        let winner = "";
+
+        function determineWinner() {
+            if (checkWin("X")) {
+                winner = "X";
+                announceWinner("X");
+            } else if (checkWin("O")) {
+                winner = "O";
+                announceWinner("O");
+            }
+        }
+
+        function checkWin(player) {
+            // Check rows
+            for (let i = 0; i < 9; i += 3) {
+                if (
+                    cells[i].textContent === player &&
+                    cells[i + 1].textContent === player &&
+                    cells[i + 2].textContent === player
+                ) {
+                    return true;
+                }
+            }
+
+            // Check columns
+            for (let i = 0; i < 3; i++) {
+                if (
+                    cells[i].textContent === player &&
+                    cells[i + 3].textContent === player &&
+                    cells[i + 6].textContent === player
+                ) {
+                    return true;
+                }
+            }
+
+            // Check diagonals
+            if (
+                cells[0].textContent === player &&
+                cells[4].textContent === player &&
+                cells[8].textContent === player
+            ) {
+                return true;
+            }
+            if (
+                cells[2].textContent === player &&
+                cells[4].textContent === player &&
+                cells[6].textContent === player
+            ) {
+                return true;
+            }
+
+            return false;
+        }
+
+
+        function resetGame() {
+            for (let i = 0; i < 9; i++) {
+                cells[i].textContent = "";
+            }
+            currentPlayer = "X";
+            gameOver = false;
+        }
+
+    </script>
+</body>
+
+</html>
